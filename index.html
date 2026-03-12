@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GuardianBox</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<!-- SPLASH -->
+
+<div class="screen" id="splash">
+
+<h1>🔐 GuardianBox</h1>
+<p>Protección inteligente</p>
+
+</div>
+
+<div class="app">
+
+<!-- LOGIN -->
+
+<div class="screen" id="login">
+
+<h2>Iniciar sesión</h2>
+
+<input id="user" placeholder="Usuario">
+
+<div class="password-box">
+
+<input type="password" id="pass" placeholder="Contraseña">
+
+<span class="ojo" id="ojoPass" onclick="togglePassword()">👁</span>
+
+</div>
+
+<button onclick="login()">Entrar</button>
+
+<p id="error"></p>
+
+</div>
+
+<!-- BLOQUEO -->
+
+<div class="screen" id="bloqueo">
+
+<h2>🔒 APP BLOQUEADA</h2>
+
+<p>Demasiados intentos fallidos</p>
+
+<p>Espere <span id="contador">30</span> segundos</p>
+
+</div>
+
+<!-- PANEL -->
+
+<div class="screen" id="panel">
+
+<h2>Panel de Control</h2>
+
+<div class="panel-grid">
+
+<button class="btn open" onclick="abrirCaja()">🔓 Abrir Caja</button>
+
+<button class="btn lock" onclick="bloquearCaja()">🔒 Bloquear Caja</button>
+
+<button class="btn change" onclick="cambiarPasswordCaja()">🔑 Cambiar contraseña de la caja</button>
+
+<button onclick="abrirConfiguracion()">⚙ Configuración</button>
+
+<button class="btn history" onclick="verActividad()">📊 Actividad</button>
+
+<button class="btn export" onclick="exportarDatos()">💾 Exportar datos</button>
+
+</div>
+
+<p id="mensaje"></p>
+
+</div>
+
+
+<!-- CAJA -->
+
+<div class="screen" id="caja">
+
+<h2>Interior de la Caja</h2>
+
+<div class="card">
+
+<h3>💰 Dinero guardado</h3>
+
+<p id="totalDinero">$0</p>
+
+<div class="money-buttons">
+
+<button onclick="agregarDinero()">➕ Agregar</button>
+
+<button onclick="retirarDinero()">➖ Retirar</button>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>📦 Objetos guardados</h3>
+
+<ul id="listaObjetos"></ul>
+
+<button onclick="agregarObjeto()">➕ Agregar objeto</button>
+
+</div>
+
+<button class="volver" onclick="volverPanel()">⬅ Volver</button>
+
+</div>
+
+
+<!-- HISTORIAL -->
+
+<div class="screen" id="actividad">
+
+<h2>Actividad</h2>
+
+<ul id="listaActividad"></ul>
+
+<button class="volver" onclick="volverPanel()">⬅ Volver</button>
+
+</div>
+
+<div class="screen" id="configuracion" style="display:none">
+
+<h2>Configuración</h2>
+
+<input id="userActual" placeholder="Usuario actual">
+
+<input id="passActual" type="password" placeholder="Contraseña actual">
+
+<input id="userNuevo" placeholder="Nuevo usuario">
+
+<input id="passNuevo" type="password" placeholder="Nueva contraseña">
+
+<button onclick="guardarCredenciales()">Guardar cambios</button>
+
+<button onclick="volverPanel()">Volver</button>
+
+</div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
