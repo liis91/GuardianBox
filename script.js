@@ -21,9 +21,15 @@ document.getElementById("login").style.display="block"
 
 function mostrarPantalla(id){
 
-document.querySelectorAll(".screen").forEach(s=>s.style.display="none")
+document.querySelectorAll(".screen").forEach(s=>{
+s.classList.remove("activa")
+})
 
-document.getElementById(id).style.display="block"
+let pantalla=document.getElementById(id)
+
+setTimeout(()=>{
+pantalla.classList.add("activa")
+},50)
 
 }
 
@@ -582,3 +588,4 @@ registrarActividad("Historial borrado")
 }
 
 }
+
