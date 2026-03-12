@@ -333,5 +333,19 @@ transform:translateY(-50%);
 cursor:pointer;
 font-size:18px;
 user-select:none;
+}
 
+.btnBorrar{
+margin-top:20px;
+padding:10px 18px;
+border:none;
+border-radius:8px;
+background:#d9534f;
+color:white;
+font-size:14px;
+cursor:pointer;
+}
+
+.btnBorrar:hover{
+background:#c9302c;
 }
