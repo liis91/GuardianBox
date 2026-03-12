@@ -337,20 +337,15 @@ user-select:none;
 
 .iconoBorrar{
 margin-top:15px;
-font-size:20px;
-background:#e74c3c;
+font-size:22px;
+background:none;
 border:none;
-border-radius:50%;
-width:40px;
-height:40px;
-color:white;
 cursor:pointer;
-display:flex;
-align-items:center;
-justify-content:center;
+color:white;
 transition:transform 0.2s ease;
 }
 
 .iconoBorrar:active{
-transform:scale(0.85);
+transform:scale(0.8);
 }
+
