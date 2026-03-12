@@ -247,10 +247,20 @@ function registrarActividad(texto){
 
 let fecha=new Date()
 
+let dia=fecha.getDate().toString().padStart(2,"0")
+let mes=(fecha.getMonth()+1).toString().padStart(2,"0")
+let año=fecha.getFullYear()
+
 let hora=fecha.getHours().toString().padStart(2,"0")+":"+
 fecha.getMinutes().toString().padStart(2,"0")
 
-actividad.unshift(hora+" - "+texto)
+let fechaCorta=dia+"/"+mes+"/"+año
+
+actividad.unshift({
+fecha:fechaCorta,
+hora:hora,
+texto:texto
+})
 
 mostrarActividad()
 
@@ -266,11 +276,27 @@ if(!lista) return
 
 lista.innerHTML=""
 
+let fechaActual=""
+
 actividad.forEach(item=>{
+
+if(item.fecha!==fechaActual){
+
+fechaActual=item.fecha
+
+let titulo=document.createElement("li")
+
+titulo.innerHTML="📅 "+fechaActual
+titulo.style.fontWeight="bold"
+titulo.style.marginTop="10px"
+
+lista.appendChild(titulo)
+
+}
 
 let li=document.createElement("li")
 
-li.innerText=item
+li.innerText=item.hora+" - "+item.texto
 
 lista.appendChild(li)
 
@@ -280,23 +306,46 @@ lista.appendChild(li)
 
 function exportarDatos(){
 
-let texto="REPORTE DE CAJA FUERTE\n\n"
+let fecha=new Date()
+
+let dia=fecha.getDate().toString().padStart(2,"0")
+let mes=(fecha.getMonth()+1).toString().padStart(2,"0")
+let año=fecha.getFullYear()
+
+let horas=fecha.getHours().toString().padStart(2,"0")
+let minutos=fecha.getMinutes().toString().padStart(2,"0")
+
+let fechaGeneracion=dia+"/"+mes+"/"+año+" "+horas+":"+minutos
+
+// nombre del archivo automático
+let nombreArchivo="reporte_caja_"+dia+"-"+mes+"-"+año+"_"+horas+"-"+minutos+".txt"
+
+let texto="REPORTE DE CAJA FUERTE INTELIGENTE\n"
+texto+="Sistema de seguridad con Arduino y SIM800L\n"
+texto+="Fecha de generación: "+fechaGeneracion+"\n\n"
 
 texto+="Dinero total: $"+dineroTotal+"\n\n"
 
 texto+="Objetos guardados:\n"
 
 objetosCaja.forEach(o=>{
-
 texto+="- "+o+"\n"
-
 })
 
 texto+="\nActividad:\n"
 
-actividad.forEach(a=>{
+let fechaActual=""
 
-texto+=a+"\n"
+actividad.forEach(item=>{
+
+if(item.fecha!==fechaActual){
+
+fechaActual=item.fecha
+texto+="\n📅 "+fechaActual+"\n"
+
+}
+
+texto+=item.hora+" - "+item.texto+"\n"
 
 })
 
@@ -306,7 +355,7 @@ let link=document.createElement("a")
 
 link.href=URL.createObjectURL(blob)
 
-link.download="reporte_caja.txt"
+link.download=nombreArchivo
 
 link.click()
 
@@ -330,7 +379,15 @@ if(dineroGuardado) dineroTotal=parseFloat(dineroGuardado)
 
 if(objetosGuardados) objetosCaja=JSON.parse(objetosGuardados)
 
-if(actividadGuardada) actividad=JSON.parse(actividadGuardada)
+if(actividadGuardada){
+
+actividad=JSON.parse(actividadGuardada)
+
+if(typeof actividad[0]==="string"){
+actividad=[]
+}
+
+}
 
 setTimeout(()=>{
 
@@ -503,6 +560,24 @@ ojo.innerText="🙈"
 
 input.type="password"
 ojo.innerText="👁"
+
+}
+
+}
+
+function borrarHistorial(){
+
+let confirmar=confirm("¿Desea borrar todo el historial?")
+
+if(confirmar){
+
+actividad=[]
+
+localStorage.removeItem("actividad")
+
+mostrarActividad()
+
+registrarActividad("Historial borrado")
 
 }
 
