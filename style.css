@@ -354,17 +354,3 @@ transition:transform 0.2s ease;
 .iconoBorrar:active{
 transform:scale(0.85);
 }
-
-.screen{
-display:none;
-opacity:0;
-transform:translateY(20px);
-transition:all 0.4s ease;
-}
-
-.screen.activa{
-display:block;
-opacity:1;
-transform:translateY(0);
-}
-
