@@ -215,10 +215,61 @@ display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
+
+position:fixed;
+top:0;
+left:0;
+
+width:100%;
 height:100vh;
+
 background:linear-gradient(135deg,#020617,#0f172a);
+
 color:white;
-font-size:28px;
+text-align:center;
+
+padding:20px;
+box-sizing:border-box;
+
+}
+
+/* Candado */
+#splash .logo{
+font-size:clamp(60px,12vw,90px);
+margin-bottom:18px;
+animation:pulsoCandado 1s infinite ease-in-out;
+}
+
+/* Texto principal */
+#splash h1{
+font-size:clamp(36px,7vw,55px);
+letter-spacing:3px;
+margin:0;
+font-weight:600;
+}
+
+/* Subtítulo */
+#splash p{
+font-size:clamp(16px,3.5vw,22px);
+color:#cbd5f5;
+margin-top:12px;
+}
+
+/*Candado animación*/
+
+@keyframes pulsoCandado{
+
+0%{
+transform:scale(1);
+}
+
+50%{
+transform:scale(1.08);
+}
+
+100%{
+transform:scale(1);
+}
 
 }
 
@@ -362,4 +413,31 @@ cursor:pointer;
 
 .btnBorrar:hover{
 background:#c9302c;
+}
+
+@keyframes aparecerSplash{
+
+0%{
+opacity:0;
+transform:translateY(20px);
+}
+
+100%{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+
+#splash h1{
+color:white;
+font-size:34px;
+letter-spacing:2px;
+animation:aparecerSplash 1s ease;
+}
+
+#splash p{
+color:#cbd5f5;
+margin-top:10px;
+animation:aparecerSplash 1.5s ease;
 }
