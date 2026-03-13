@@ -1,13 +1,11 @@
-let usuario=localStorage.getItem("usuarioApp") || "admin"
-let contraseña=localStorage.getItem("passwordApp") || "1234"
-let contraseñaCaja=localStorage.getItem("passwordCaja") || "1B3D"
+let usuario = localStorage.getItem("usuarioApp") || "admin"
+let password = localStorage.getItem("passwordApp") || "1234"
+let passwordCaja = localStorage.getItem("passwordCaja") || "1B3D"
 
-let tiempoBloqueo=30
-let temporizador
-let dineroTotal=0
-let objetosCaja=[]
-let actividad=[]
-let intentos=1
+let dineroTotal = 0
+let objetosCaja = []
+let actividad = []
+let intentos = 1
 
 cargarDatos()
 
@@ -21,17 +19,12 @@ document.getElementById("login").style.display="block"
 
 function mostrarPantalla(id){
 
-document.querySelectorAll(".screen").forEach(s=>{
-s.classList.remove("activa")
-})
+document.querySelectorAll(".screen").forEach(s=>s.style.display="none")
 
-let pantalla=document.getElementById(id)
-
-setTimeout(()=>{
-pantalla.classList.add("activa")
-},50)
+document.getElementById(id).style.display="block"
 
 }
+
 
 function login(){
 
@@ -45,7 +38,7 @@ return
 
 }
 
-if(u===usuario && p===contraseña){
+if(u===usuario && p===password){
 
 registrarActividad("Inicio de sesión")
 
@@ -63,15 +56,16 @@ document.getElementById("error").innerText="Datos incorrectos"
 
 }
 
+
 function abrirCaja(){
 
 let ingreso=prompt("Ingrese la contraseña de la caja")
 
 if(!ingreso) return
 
-ingreso=ingreso.trim()
+ingreso=ingreso.trim().toUpperCase()
 
-if(ingreso===contraseñaCaja){
+if(ingreso===passwordCaja){
 
 let comando="OPEN_BOX_"+ingreso
 
@@ -91,6 +85,7 @@ registrarActividad("Intento fallido de apertura")
 
 }
 
+
 function bloquearCaja(){
 
 let comando="LOCK_BOX"
@@ -103,11 +98,13 @@ document.getElementById("mensaje").innerText="Comando de bloqueo enviado"
 
 }
 
+
 function volverPanel(){
 
 mostrarPantalla("panel")
 
 }
+
 
 function verActividad(){
 
@@ -117,21 +114,6 @@ mostrarActividad()
 
 }
 
-function cambiarPassword(){
-
-let nueva=prompt("Nueva contraseña")
-
-if(nueva){
-
-contraseña=nueva
-
-registrarActividad("Contraseña cambiada")
-
-alert("Contraseña actualizada")
-
-}
-
-}
 
 function agregarDinero(){
 
@@ -144,7 +126,6 @@ dinero=parseFloat(dinero)
 if(isNaN(dinero) || dinero<=0){
 
 alert("Ingrese una cantidad válida")
-
 return
 
 }
@@ -160,6 +141,7 @@ guardarDatos()
 
 }
 
+
 function retirarDinero(){
 
 let dinero=prompt("Cantidad a retirar")
@@ -171,7 +153,6 @@ dinero=parseFloat(dinero)
 if(isNaN(dinero) || dinero<=0){
 
 alert("Ingrese una cantidad válida")
-
 return
 
 }
@@ -195,11 +176,13 @@ alert("No hay suficiente dinero")
 
 }
 
+
 function actualizarDinero(){
 
 document.getElementById("totalDinero").innerText="$"+dineroTotal.toFixed(2)
 
 }
+
 
 function agregarObjeto(){
 
@@ -219,6 +202,7 @@ guardarDatos()
 
 }
 
+
 function eliminarObjeto(index){
 
 registrarActividad("Objeto eliminado: "+objetosCaja[index])
@@ -230,6 +214,7 @@ mostrarObjetos()
 guardarDatos()
 
 }
+
 
 function mostrarObjetos(){
 
@@ -248,6 +233,7 @@ lista.appendChild(li)
 })
 
 }
+
 
 function registrarActividad(texto){
 
@@ -268,11 +254,12 @@ hora:hora,
 texto:texto
 })
 
-mostrarActividad()
-
 guardarDatos()
 
+mostrarActividad()
+
 }
+
 
 function mostrarActividad(){
 
@@ -310,6 +297,26 @@ lista.appendChild(li)
 
 }
 
+
+function borrarHistorial(){
+
+let confirmar=confirm("¿Desea borrar todo el historial?")
+
+if(confirmar){
+
+actividad=[]
+
+guardarDatos()
+
+mostrarActividad()
+
+alert("Historial eliminado")
+
+}
+
+}
+
+
 function exportarDatos(){
 
 let fecha=new Date()
@@ -321,14 +328,10 @@ let año=fecha.getFullYear()
 let horas=fecha.getHours().toString().padStart(2,"0")
 let minutos=fecha.getMinutes().toString().padStart(2,"0")
 
-let fechaGeneracion=dia+"/"+mes+"/"+año+" "+horas+":"+minutos
-
-// nombre del archivo automático
 let nombreArchivo="reporte_caja_"+dia+"-"+mes+"-"+año+"_"+horas+"-"+minutos+".txt"
 
 let texto="REPORTE DE CAJA FUERTE INTELIGENTE\n"
-texto+="Sistema de seguridad con Arduino y SIM800L\n"
-texto+="Fecha de generación: "+fechaGeneracion+"\n\n"
+texto+="Fecha de generación: "+dia+"/"+mes+"/"+año+" "+horas+":"+minutos+"\n\n"
 
 texto+="Dinero total: $"+dineroTotal+"\n\n"
 
@@ -367,6 +370,67 @@ link.click()
 
 }
 
+
+function cambiarPasswordCaja(){
+
+let actual=prompt("Ingrese la contraseña actual de la caja")
+
+if(actual===passwordCaja){
+
+let nueva=prompt("Nueva contraseña (4 a 6 caracteres: 0-9 A B C D)")
+
+if(!nueva) return
+
+nueva=nueva.toUpperCase().trim()
+
+if(nueva.length<4 || nueva.length>6){
+
+alert("Debe tener entre 4 y 6 caracteres")
+return
+
+}
+
+let permitido=/^[0-9ABCD]+$/
+
+if(!permitido.test(nueva)){
+
+alert("Solo se permiten números y A B C D")
+return
+
+}
+
+passwordCaja=nueva
+
+localStorage.setItem("passwordCaja",nueva)
+
+let comando="CHANGE_PASS_"+nueva
+
+enviarComando(comando)
+
+registrarActividad("Contraseña de la caja cambiada")
+
+alert("Contraseña actualizada")
+
+}else{
+
+alert("Contraseña incorrecta")
+
+}
+
+}
+
+
+function enviarComando(comando){
+
+let numero="+593999074776"
+
+let url="sms:"+numero+"?body="+encodeURIComponent(comando)
+
+window.location.href=url
+
+}
+
+
 function guardarDatos(){
 
 localStorage.setItem("dinero",dineroTotal)
@@ -374,6 +438,7 @@ localStorage.setItem("objetos",JSON.stringify(objetosCaja))
 localStorage.setItem("actividad",JSON.stringify(actividad))
 
 }
+
 
 function cargarDatos(){
 
@@ -389,7 +454,7 @@ if(actividadGuardada){
 
 actividad=JSON.parse(actividadGuardada)
 
-if(typeof actividad[0]==="string"){
+if(!Array.isArray(actividad)){
 actividad=[]
 }
 
@@ -405,121 +470,6 @@ mostrarActividad()
 
 }
 
-function cambiarPasswordCaja(){
-
-let actual=prompt("Ingrese la contraseña actual de la caja")
-
-if(actual===contraseñaCaja){
-
-let nueva=prompt("Ingrese la nueva contraseña (4 caracteres: 0-9, A, B, C, D)")
-
-if(!nueva) return
-
-nueva=nueva.toUpperCase().trim()
-
-// Validar longitud
-if(nueva.length<4 || nueva.length>6){
-
-alert("La contraseña debe tener entre 4 y 6 caracteres")
-return
-
-}
-
-// Validar caracteres permitidos
-let permitido=/^[0-9ABCD]+$/
-
-if(!permitido.test(nueva)){
-
-alert("Solo se permiten números y las letras A, B, C, D")
-return
-
-}
-
-contraseñaCaja=nueva
-
-localStorage.setItem("passwordCaja",nueva)
-
-// enviar al Arduino
-let comando="CHANGE_PASS_"+nueva
-enviarComando(comando)
-
-registrarActividad("Contraseña de la caja cambiada")
-
-alert("Contraseña actualizada")
-
-}else{
-
-alert("Contraseña incorrecta")
-
-}
-
-}
-
-function enviarComando(comando){
-
-let numero="+593999074776"; // número del SIM800L
-
-let url="sms:"+numero+"?body="+encodeURIComponent(comando);
-
-window.location.href=url;
-
-}
-
-
-function guardarCredenciales(){
-
-let actualUser=document.getElementById("userActual").value
-let actualPass=document.getElementById("passActual").value
-
-if(actualUser===usuario && actualPass===contraseña){
-
-let nuevoUser=document.getElementById("userNuevo").value
-let nuevaPass=document.getElementById("passNuevo").value
-
-if(nuevoUser && nuevaPass){
-
-usuario=nuevoUser
-contraseña=nuevaPass
-
-localStorage.setItem("usuarioApp",nuevoUser)
-localStorage.setItem("passwordApp",nuevaPass)
-
-registrarActividad("Credenciales de la app cambiadas")
-
-alert("Datos actualizados")
-
-// LIMPIAR CAMPOS
-document.getElementById("userActual").value=""
-document.getElementById("passActual").value=""
-document.getElementById("userNuevo").value=""
-document.getElementById("passNuevo").value=""
-
-volverPanel()
-
-}else{
-
-alert("Ingrese los nuevos datos")
-
-}
-
-}else{
-
-alert("Usuario o contraseña incorrectos")
-
-}
-
-}
-
-function abrirConfiguracion(){
-
-document.getElementById("userActual").value=""
-document.getElementById("passActual").value=""
-document.getElementById("userNuevo").value=""
-document.getElementById("passNuevo").value=""
-
-mostrarPantalla("configuracion")
-
-}
 
 function activarBloqueo(){
 
@@ -552,6 +502,7 @@ mostrarPantalla("login")
 
 }
 
+
 function togglePassword(){
 
 let input=document.getElementById("pass")
@@ -571,21 +522,57 @@ ojo.innerText="👁"
 
 }
 
-function borrarHistorial(){
+function abrirConfiguracion(){
 
-let confirmar=confirm("¿Desea borrar todo el historial?")
+document.getElementById("userActual").value=""
+document.getElementById("passActual").value=""
+document.getElementById("userNuevo").value=""
+document.getElementById("passNuevo").value=""
 
-if(confirmar){
+mostrarPantalla("configuracion")
 
-actividad=[]
+}
 
-localStorage.removeItem("actividad")
 
-mostrarActividad()
+function guardarCredenciales(){
 
-registrarActividad("Historial borrado")
+let actualUser=document.getElementById("userActual").value
+let actualPass=document.getElementById("passActual").value
+
+if(actualUser===usuario && actualPass===password){
+
+let nuevoUser=document.getElementById("userNuevo").value
+let nuevaPass=document.getElementById("passNuevo").value
+
+if(nuevoUser && nuevaPass){
+
+usuario=nuevoUser
+password=nuevaPass
+
+localStorage.setItem("usuarioApp",nuevoUser)
+localStorage.setItem("passwordApp",nuevaPass)
+
+registrarActividad("Credenciales de la app cambiadas")
+
+alert("Datos actualizados")
+
+document.getElementById("userActual").value=""
+document.getElementById("passActual").value=""
+document.getElementById("userNuevo").value=""
+document.getElementById("passNuevo").value=""
+
+volverPanel()
+
+}else{
+
+alert("Ingrese los nuevos datos")
+
+}
+
+}else{
+
+alert("Usuario o contraseña incorrectos")
 
 }
 
 }
-
