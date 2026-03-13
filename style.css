@@ -333,6 +333,7 @@ transform:translateY(-50%);
 cursor:pointer;
 font-size:18px;
 user-select:none;
+
 }
 
 .iconoBorrar{
@@ -342,10 +343,23 @@ background:none;
 border:none;
 cursor:pointer;
 color:white;
-transition:transform 0.2s ease;
 }
 
 .iconoBorrar:active{
 transform:scale(0.8);
 }
 
+.btnBorrar{
+margin-top:20px;
+padding:12px 25px;
+border:none;
+border-radius:10px;
+background:#d9534f;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+.btnBorrar:hover{
+background:#c9302c;
+}
