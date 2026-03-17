@@ -319,57 +319,39 @@ alert("Historial eliminado")
 
 function exportarDatos(){
 
-let fecha=new Date()
+let texto="REPORTE GUARDIANBOX\n\n"
 
-let dia=fecha.getDate().toString().padStart(2,"0")
-let mes=(fecha.getMonth()+1).toString().padStart(2,"0")
-let año=fecha.getFullYear()
+texto+="Dinero: $"+dineroTotal+"\n\n"
 
-let horas=fecha.getHours().toString().padStart(2,"0")
-let minutos=fecha.getMinutes().toString().padStart(2,"0")
-
-let nombreArchivo="reporte_caja_"+dia+"-"+mes+"-"+año+"_"+horas+"-"+minutos+".txt"
-
-let texto="REPORTE DE CAJA FUERTE INTELIGENTE\n"
-texto+="Fecha de generación: "+dia+"/"+mes+"/"+año+" "+horas+":"+minutos+"\n\n"
-
-texto+="Dinero total: $"+dineroTotal+"\n\n"
-
-texto+="Objetos guardados:\n"
-
+texto+="Objetos:\n"
 objetosCaja.forEach(o=>{
 texto+="- "+o+"\n"
 })
 
 texto+="\nActividad:\n"
 
-let fechaActual=""
-
 actividad.forEach(item=>{
-
-if(item.fecha!==fechaActual){
-
-fechaActual=item.fecha
-texto+="\n📅 "+fechaActual+"\n"
-
-}
-
-texto+=item.hora+" - "+item.texto+"\n"
-
+texto+=item.fecha+" "+item.hora+" - "+item.texto+"\n"
 })
 
-let blob=new Blob([texto],{type:"text/plain"})
+// INTENTAR COMPARTIR
+if(navigator.share){
 
-let link=document.createElement("a")
+navigator.share({
+title:"Reporte GuardianBox",
+text:texto
+})
 
-link.href=URL.createObjectURL(blob)
+}else{
 
-link.download=nombreArchivo
+// SI NO HAY SHARE → COPIAR
+navigator.clipboard.writeText(texto)
 
-link.click()
+alert("Reporte copiado al portapapeles")
 
 }
 
+}
 
 function cambiarPasswordCaja(){
 
