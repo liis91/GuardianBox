@@ -391,14 +391,13 @@ title:"Reporte GuardianBox",
 text:texto
 }).catch(()=>{
 // si falla → copiar
-navigator.clipboard.writeText(texto)
-alert("Reporte copiado al portapapeles")
+mostrarToast("📋 Copiado al portapapeles");
 })
 
 }else{
 
 navigator.clipboard.writeText(texto)
-alert("Reporte copiado al portapapeles")
+mostrarToast("📋 Copiado al portapapeles");
 
 }
 
@@ -594,7 +593,7 @@ localStorage.setItem("passwordApp",nuevaPass)
 
 registrarActividad("Credenciales de la app cambiadas")
 
-mostrarMensaje("📋Datos actualizados");
+mostrarToast("✅ Datos actualizados");
 
 document.getElementById("userActual").value=""
 document.getElementById("passActual").value=""
@@ -724,5 +723,18 @@ if(!m) return;
 if(m.innerText !== texto){
 m.innerText = texto;
 }
+
+}
+
+function mostrarToast(texto){
+
+let toast = document.getElementById("toast");
+
+toast.innerText = texto;
+toast.classList.add("show");
+
+setTimeout(()=>{
+toast.classList.remove("show");
+},2000);
 
 }
