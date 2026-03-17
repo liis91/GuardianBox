@@ -506,3 +506,24 @@ transition: all 0.2s ease;
 #mensajeConfig {
 transition: opacity 0.2s ease;
 }
+
+#toast {
+position: fixed;
+bottom: 20px;
+left: 50%;
+transform: translateX(-50%);
+background: #333;
+color: white;
+padding: 10px 20px;
+border-radius: 20px;
+font-size: 14px;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.3s ease, bottom 0.3s ease;
+z-index: 999;
+}
+
+#toast.show {
+opacity: 1;
+bottom: 40px;
+}
