@@ -44,9 +44,9 @@
 
 </div>
 
-<button onclick="login()">Entrar</button>
+<p id="error" style="color:red; margin-top:10px;"></p>
 
-<p id="error"></p>
+<button onclick="login()">Entrar</button>
 
 </div>
 
@@ -153,12 +153,31 @@
 
 <input id="passNuevo" type="password" placeholder="Nueva contraseña">
 
+<p id="mensajeConfig" style="color:red; margin-top:10px;"></p>
+
 <button onclick="guardarCredenciales()">Guardar cambios</button>
 
 <button onclick="volverPanel()">Volver</button>
 
 </div>
 
+</div>
+
+<div id="modal" class="modal">
+  <div class="modal-content">
+    
+    <h2 id="modalTitulo">Título</h2>
+    
+    <input id="modalInput" type="text" placeholder="Escribe aquí">
+    
+    <p id="modalMensaje"></p>
+
+    <div class="modal-botones">
+      <button onclick="cerrarModal()">Cancelar</button>
+      <button onclick="confirmarModal()">Aceptar</button>
+    </div>
+
+  </div>
 </div>
 
 <script src="script.js"></script>
