@@ -441,3 +441,68 @@ color:#cbd5f5;
 margin-top:10px;
 animation:aparecerSplash 1.5s ease;
 }
+
+.modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100vh;
+background:rgba(0,0,0,0.6);
+
+display:none;
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+
+.modal-content{
+background:#0f172a;
+padding:20px;
+border-radius:12px;
+width:90%;
+max-width:350px;
+text-align:center;
+color:white;
+}
+
+.modal-content input{
+width:100%;
+padding:10px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+outline:none;
+}
+
+.modal-botones{
+margin-top:15px;
+display:flex;
+justify-content:space-between;
+}
+
+.modal-botones button{
+flex:1;
+margin:5px;
+padding:10px;
+border:none;
+border-radius:8px;
+background:#1e293b;
+color:white;
+}
+
+@keyframes shake {
+0% { transform: translateX(0); }
+25% { transform: translateX(-5px); }
+50% { transform: translateX(5px); }
+75% { transform: translateX(-5px); }
+100% { transform: translateX(0); }
+}
+
+#modalMensaje {
+transition: all 0.2s ease;
+}
+
+#mensajeConfig {
+transition: opacity 0.2s ease;
+}
