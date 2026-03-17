@@ -5,7 +5,7 @@ let passwordCaja = localStorage.getItem("passwordCaja") || "1B3D"
 let dineroTotal = 0
 let objetosCaja = []
 let actividad = []
-let intentos = 1
+let intentos = 0
 
 cargarDatos()
 
@@ -38,7 +38,8 @@ return
 
 }
 
-if(u===usuario && p===password){
+if(u === usuario && p === password){
+intentos = 0
 
 registrarActividad("Inicio de sesión")
 
@@ -59,29 +60,40 @@ document.getElementById("error").innerText="Datos incorrectos"
 
 function abrirCaja(){
 
-let ingreso=prompt("Ingrese la contraseña de la caja")
+abrirModal("🔐 Ingrese contraseña de la caja","Contraseña", function(ingreso){
 
-if(!ingreso) return
+if(!ingreso || ingreso.trim() === ""){
 
-ingreso=ingreso.trim().toUpperCase()
+setMensajeModal("⚠ No ha introducido ningún carácter");
+errorInputModal();
+return;
 
-if(ingreso===passwordCaja){
+}
 
-let comando="OPEN_BOX_"+ingreso
+ingreso = ingreso.trim();
 
-enviarComando(comando)
+if(ingreso === passwordCaja){
 
-registrarActividad("Solicitud de apertura enviada")
+let comando = "OPEN_BOX_" + ingreso;
 
-mostrarPantalla("caja")
+enviarComando(comando);
+
+registrarActividad("Solicitud de apertura enviada");
+
+cerrarModal(); // 👈 cerrar AQUÍ
+
+mostrarPantalla("caja");
 
 }else{
 
-alert("Contraseña incorrecta")
+registrarActividad("Intento fallido de apertura");
 
-registrarActividad("Intento fallido de apertura")
+setMensajeModal("❌ Contraseña incorrecta");
+errorInputModal();
 
 }
+
+});
 
 }
 
@@ -94,7 +106,8 @@ enviarComando(comando)
 
 registrarActividad("Solicitud de bloqueo enviada")
 
-document.getElementById("mensaje").innerText="Comando de bloqueo enviado"
+mostrarMensaje("🔒 Comando de bloqueo enviado");
+setMensajeModal("Caja bloqueda con exito");
 
 }
 
@@ -117,62 +130,73 @@ mostrarActividad()
 
 function agregarDinero(){
 
-let dinero=prompt("Cantidad a guardar")
+abrirModal("💰 Agregar dinero","Cantidad", function(dinero){
 
-if(dinero===null) return
-
-dinero=parseFloat(dinero)
-
-if(isNaN(dinero) || dinero<=0){
-
-alert("Ingrese una cantidad válida")
-return
-
+if(!dinero || dinero.trim() === ""){
+setMensajeModal("⚠ No ha introducido ningún carácter");
+errorInputModal();
+return;
 }
 
-dineroTotal=(dineroTotal+dinero).toFixed(2)
-dineroTotal=parseFloat(dineroTotal)
+dinero = parseFloat(dinero);
 
-actualizarDinero()
-
-registrarActividad("Dinero agregado $" + dinero.toFixed(2))
-
-guardarDatos()
-
+if(isNaN(dinero) || dinero <= 0){
+setMensajeModal("❌ Cantidad inválida");
+errorInputModal();
+return;
 }
 
+dineroTotal = (dineroTotal + dinero).toFixed(2);
+dineroTotal = parseFloat(dineroTotal);
+
+actualizarDinero();
+
+registrarActividad("Dinero agregado $" + dinero.toFixed(2));
+
+guardarDatos();
+
+cerrarModal();
+
+});
+
+}
 
 function retirarDinero(){
 
-let dinero=prompt("Cantidad a retirar")
+abrirModal("💸 Retirar dinero","Cantidad", function(dinero){
 
-if(dinero===null) return
-
-dinero=parseFloat(dinero)
-
-if(isNaN(dinero) || dinero<=0){
-
-alert("Ingrese una cantidad válida")
-return
-
+if(!dinero || dinero.trim() === ""){
+setMensajeModal("⚠ No ha introducido ningún carácter");
+errorInputModal();
+return;
 }
 
-if(dinero<=dineroTotal){
+dinero = parseFloat(dinero);
 
-dineroTotal=(dineroTotal-dinero).toFixed(2)
-dineroTotal=parseFloat(dineroTotal)
-
-actualizarDinero()
-
-registrarActividad("Dinero retirado $" + dinero.toFixed(2))
-
-guardarDatos()
-
-}else{
-
-alert("No hay suficiente dinero")
-
+if(isNaN(dinero) || dinero <= 0){
+setMensajeModal("❌ Cantidad inválida");
+errorInputModal();
+return;
 }
+
+if(dinero > dineroTotal){
+setMensajeModal("❌ No hay suficiente dinero");
+errorInputModal();
+return;
+}
+
+dineroTotal = (dineroTotal - dinero).toFixed(2);
+dineroTotal = parseFloat(dineroTotal);
+
+actualizarDinero();
+
+registrarActividad("Dinero retirado $" + dinero.toFixed(2));
+
+guardarDatos();
+
+cerrarModal();
+
+});
 
 }
 
@@ -186,19 +210,27 @@ document.getElementById("totalDinero").innerText="$"+dineroTotal.toFixed(2)
 
 function agregarObjeto(){
 
-let objeto=prompt("Objeto a guardar")
+abrirModal("📦 Agregar objeto","Nombre del objeto", function(objeto){
 
-if(objeto){
-
-objetosCaja.push(objeto)
-
-mostrarObjetos()
-
-registrarActividad("Objeto agregado: "+objeto)
-
-guardarDatos()
-
+if(!objeto || objeto.trim() === ""){
+setMensajeModal("⚠ No ha introducido ningún carácter");
+errorInputModal();
+return;
 }
+
+objeto = objeto.trim();
+
+objetosCaja.push(objeto);
+
+mostrarObjetos();
+
+registrarActividad("Objeto agregado: " + objeto);
+
+guardarDatos();
+
+cerrarModal();
+
+});
 
 }
 
@@ -300,19 +332,36 @@ lista.appendChild(li)
 
 function borrarHistorial(){
 
-let confirmar=confirm("¿Desea borrar todo el historial?")
+abrirModal("⚠ ¿Desea borrar el historial?","Escriba SI para confirmar", function(confirmar){
 
-if(confirmar){
+if(!confirmar || confirmar.trim() === ""){
+setMensajeModal("⚠ No ha introducido ningún carácter");
+errorInputModal();
+return;
+}
 
-actividad=[]
+confirmar = confirmar.trim().toUpperCase();
 
-guardarDatos()
+if(confirmar === "SI" || confirmar === "si" || confirmar === "Si" || confirmar === "sI"){
 
-mostrarActividad()
+actividad = [];
 
-alert("Historial eliminado")
+guardarDatos();
+
+mostrarActividad();
+
+cerrarModal();
+
+mostrarMensaje("🗑 Historial de actividades borrado");
+
+}else{
+
+setMensajeModal("❌ Debe escribir SI para confirmar");
+errorInputModal();
 
 }
+
+});
 
 }
 
@@ -334,81 +383,90 @@ actividad.forEach(item=>{
 texto+=item.fecha+" "+item.hora+" - "+item.texto+"\n"
 })
 
-// INTENTAR COMPARTIR
+// 📱 compartir
 if(navigator.share){
 
 navigator.share({
 title:"Reporte GuardianBox",
 text:texto
+}).catch(()=>{
+// si falla → copiar
+navigator.clipboard.writeText(texto)
+alert("Reporte copiado al portapapeles")
 })
 
 }else{
 
-// SI NO HAY SHARE → COPIAR
 navigator.clipboard.writeText(texto)
-
 alert("Reporte copiado al portapapeles")
 
 }
 
 }
 
+
 function cambiarPasswordCaja(){
 
-let actual=prompt("Ingrese la contraseña actual de la caja")
+// PASO 1: pedir contraseña actual
+abrirModal("🔐 Contraseña actual","Ingrese contraseña", function(actual){
 
-if(actual===passwordCaja){
-
-let nueva=prompt("Nueva contraseña (4 a 6 caracteres: 0-9 A B C D)")
-
-if(!nueva) return
-
-nueva=nueva.toUpperCase().trim()
-
-if(nueva.length<4 || nueva.length>6){
-
-alert("Debe tener entre 4 y 6 caracteres")
-return
-
+if(!actual || actual.trim() === ""){
+setMensajeModal("⚠ No ha introducido ningún carácter");
+errorInputModal();
+return;
 }
 
-let permitido=/^[0-9ABCD]+$/
+actual = actual.trim();
+
+if(actual === passwordCaja){
+
+// PASO 2: pedir nueva contraseña
+abrirModal("🆕 Nueva contraseña","4 a 6 caracteres (0-9 A B C D)", function(nueva){
+
+if(!nueva || nueva.trim() === ""){
+setMensajeModal("⚠ No ha introducido ningún carácter");
+errorInputModal();
+return;
+}
+
+nueva = nueva.toUpperCase().trim();
+
+if(nueva.length < 4 || nueva.length > 6){
+setMensajeModal("❌ Debe tener entre 4 y 6 caracteres");
+errorInputModal();
+return;
+}
+
+let permitido = /^[0-9ABCD]+$/;
 
 if(!permitido.test(nueva)){
-
-alert("Solo se permiten números y A B C D")
-return
-
+setMensajeModal("❌ Solo se permiten números y A B C D");
+errorInputModal();
+return;
 }
 
-passwordCaja=nueva
+// GUARDAR
+passwordCaja = nueva;
+localStorage.setItem("passwordCaja", nueva);
 
-localStorage.setItem("passwordCaja",nueva)
+let comando = "CHANGE_PASS_" + nueva;
 
-let comando="CHANGE_PASS_"+nueva
+enviarComando(comando);
 
-enviarComando(comando)
+registrarActividad("Contraseña de la caja cambiada");
 
-registrarActividad("Contraseña de la caja cambiada")
+mostrarMensaje("✅ Contraseña actualizada");
 
-alert("Contraseña actualizada")
+});
 
 }else{
 
-alert("Contraseña incorrecta")
+setMensajeModal("❌ Contraseña actual incorrecta");
+errorInputModal();
 
 }
 
-}
-
-
-function enviarComando(comando){
-
-let numero="+593999074776"
-
-let url="sms:"+numero+"?body="+encodeURIComponent(comando)
-
-window.location.href=url
+});
 
 }
 
@@ -536,7 +594,7 @@ localStorage.setItem("passwordApp",nuevaPass)
 
 registrarActividad("Credenciales de la app cambiadas")
 
-alert("Datos actualizados")
+mostrarMensaje("📋Datos actualizados");
 
 document.getElementById("userActual").value=""
 document.getElementById("passActual").value=""
@@ -547,14 +605,124 @@ volverPanel()
 
 }else{
 
-alert("Ingrese los nuevos datos")
+setMensajeConfig("Ingrese los nuevos datos");
 
 }
 
 }else{
 
-alert("Usuario o contraseña incorrectos")
+setMensajeConfig("❌ Usuario o contraseña incorrectos");
 
+}
+
+}
+
+let callbackModal = null;
+
+function abrirModal(titulo, placeholder, callback){
+
+document.getElementById("modalTitulo").innerText = titulo;
+document.getElementById("modalInput").value = "";
+document.getElementById("modalInput").placeholder = placeholder;
+
+let mensaje = document.getElementById("modalMensaje");
+mensaje.innerText = "";
+mensaje.style.display = "block";
+
+document.getElementById("modal").style.display = "flex";
+
+callbackModal = callback;
+
+}
+
+function confirmarModal(){
+
+let valor = document.getElementById("modalInput").value;
+
+if(callbackModal){
+callbackModal(valor);
+}
+
+}
+
+function mostrarMensaje(texto){
+
+document.getElementById("modalTitulo").innerHTML = texto.replace(/\n/g, "<br>");
+document.getElementById("modalInput").style.display = "none";
+
+document.getElementById("modal").style.display = "flex";
+
+// 👇 hacer que Aceptar solo cierre
+callbackModal = function(){
+cerrarModal();
+};
+
+}
+
+function cerrarModal(){
+
+document.getElementById("modal").style.display = "none";
+
+// limpiar estado SIEMPRE
+callbackModal = null;
+
+// restaurar input
+document.getElementById("modalInput").style.display = "block";
+
+}
+
+function enviarComando(comando){
+
+let numero="+593999074776"
+
+let url="sms:"+numero+"?body="+encodeURIComponent(comando)
+
+window.location.href=url
+
+}
+
+function setMensajeModal(texto){
+
+let m = document.getElementById("modalMensaje");
+
+// 👇 solo cambia si es diferente (evita bugs)
+if(m.innerText !== texto){
+m.innerText = texto;
+}
+
+}
+
+function errorInputModal(){
+
+let input = document.getElementById("modalInput");
+
+input.style.border = "2px solid red";
+input.style.backgroundColor = "#ffe6e6";
+
+// animación tipo temblor 🔥
+input.style.animation = "shake 0.3s";
+
+setTimeout(()=>{
+input.style.animation = "";
+},300);
+
+// volver a normal después
+setTimeout(()=>{
+input.style.border = "";
+input.style.backgroundColor = "";
+},1500);
+
+}
+
+function setMensajeConfig(texto){
+
+let m = document.getElementById("mensajeConfig");
+
+if(!m) return;
+
+// 👇 solo cambia si es diferente
+if(m.innerText !== texto){
+m.innerText = texto;
 }
 
 }
